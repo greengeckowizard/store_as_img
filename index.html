@@ -1,0 +1,94 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=<device-width>, initial-scale=1.0">
+    <title>store_as_img</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="topnav">
+        <a class="active" href="https://greengeckowizard.github.io/store_as_img/index.html">Home</a>
+        <a href="https://greengeckowizard.github.io/store_as_img/about.html">About</a>
+    </div>
+    
+    
+    <h1>Plotting a histogram of Standard Normal distribution</h1>
+	
+	<input type="file" />
+	<div id="result"></div>	
+
+	<script>
+		document.querySelector('input').addEventListener('change', function() {
+
+		  var reader = new FileReader();
+		  reader.onload = function() {
+
+		    var arrayBuffer = this.result,
+		      array = new Uint8Array(arrayBuffer),
+		      binaryString = String.fromCharCode.apply(null, array);
+
+		    console.log(binaryString);
+
+		  }
+		  reader.readAsArrayBuffer(this.files[0]);
+
+		}, false);
+	</script>
+	
+	
+    <canvas id="my-canvas" width="200" height="200"></canvas>
+  <script>
+
+    var canvas = document.querySelector('#my-canvas');
+    var context = canvas.getContext('2d');
+
+    // to increase performance createImageData method 
+    // should be executed once e.g. before drawing
+    var image = context.createImageData(canvas.width, canvas.height);
+	var data = image.data;
+
+    function drawPixel(x, y, color) {
+      	var roundedX = Math.round(x);
+      	var roundedY = Math.round(y);
+
+      	var index = 4 * (canvas.width * roundedY + roundedX);
+
+      	data[index + 0] = color.r;
+        data[index + 1] = color.g;
+        data[index + 2] = color.b;
+        data[index + 3] = color.a;
+    }
+
+    function swapBuffer() {
+    	context.putImageData(image, 0, 0);
+    }
+
+    var colors = [
+      	{r: 255, g:   0, b:   0, a: 255}, // red
+      	{r:   0, g: 255, b:   0, a: 255}, // green
+      	{r:   0, g:   0, b: 255, a: 255}, // blue
+    ];
+
+    var t1 = new Date();
+
+    for(var i = 0; i < 10000; ++i) {
+      	var x = canvas.width * Math.random();
+      	var y = canvas.height * Math.random();
+      	var color = colors[i % colors.length];
+
+    	drawPixel(x, y, color);
+    }
+
+    swapBuffer();
+
+    var t2 = new Date();
+    var dt = t2 - t1;
+
+    console.log('elapsed time = ' + dt + ' ms');
+
+  </script>
+    
+  </body>
+</body>
+</html>
